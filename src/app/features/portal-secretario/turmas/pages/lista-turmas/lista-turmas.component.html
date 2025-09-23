@@ -1,0 +1,86 @@
+<div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Gestão de Turmas</h1>
+        <p-button 
+            (onClick)="openFormModal()"
+            label="Criar Nova Turma"
+            icon="pi pi-plus"
+            severity="primary">
+        </p-button>
+    </div>
+
+    <!-- Barra de Busca -->
+    <div class="mb-4">
+        <input 
+            pInputText
+            type="text" 
+            placeholder="Buscar turma por nome ou professor..." 
+            class="w-full">
+    </div>
+
+    <!-- Tabela de Turmas -->
+    <p-table [value]="turmas" [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nome da Turma</th>
+                <th>Nível</th>
+                <th>Período</th>
+                <th>Professor Responsável</th>
+                <th>Alunos</th>
+                <th>Status</th>
+                <th style="text-align: center">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-turma>
+            <tr>
+                <td>{{ turma.nome }}</td>
+                <td>{{ turma.nivel }}</td>
+                <td>{{ turma.periodo }}</td>
+                <td>{{ turma.professorResponsavel || '-' }}</td>
+                <td>{{ turma.totalAlunos }}/{{ turma.capacidadeMaxima }}</td>
+                <td>
+                    <p-tag 
+                        [value]="turma.status"
+                        [severity]="turma.status === 'Ativa' ? 'success' : 'danger'">
+                    </p-tag>
+                </td>
+                <td style="text-align: center">
+                    <p-button 
+                        (onClick)="gerenciarTurma(turma)"
+                        icon="pi pi-cog"
+                        severity="success"
+                        [text]="true"
+                        size="small"
+                        class="mr-2"
+                        pTooltip="Gerenciar">
+                    </p-button>
+                    <p-button 
+                        (onClick)="openFormModal(turma)"
+                        icon="pi pi-pencil"
+                        severity="info"
+                        [text]="true"
+                        size="small"
+                        class="mr-2"
+                        pTooltip="Editar">
+                    </p-button>
+                    <p-button 
+                        (onClick)="onDelete(turma.id)"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [text]="true"
+                        size="small"
+                        pTooltip="Excluir">
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal do Formulário -->
+<app-turma-form
+  *ngIf="isFormModalOpen"
+  [turma]="turmaSelecionada"
+  (save)="onSave($event)"
+  (close)="closeFormModal()">
+</app-turma-form>

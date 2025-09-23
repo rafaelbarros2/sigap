@@ -1,0 +1,65 @@
+/* Estilos específicos para o diário de classe */
+
+/* Melhorar espaçamento das abas */
+::ng-deep .p-tabview .p-tabview-panels {
+  padding: 1.5rem 0 0 0;
+}
+
+/* Estilizar inputs de nota */
+::ng-deep .p-inputnumber input {
+  text-align: center;
+  width: 100%;
+}
+
+/* Estilizar tabela */
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem 0.5rem;
+}
+
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  padding: 0.75rem 0.5rem;
+}
+
+/* Botões de presença responsivos */
+.flex.gap-1 {
+  gap: 0.25rem;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 640px) {
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .md\:grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td,
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Efeitos visuais */
+::ng-deep .p-card {
+  transition: box-shadow 0.3s ease;
+}
+
+::ng-deep .p-button {
+  transition: all 0.3s ease;
+}
+
+/* Cores customizadas para médias */
+.text-green-600 {
+  color: #059669;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+.text-purple-600 {
+  color: #9333ea;
+}

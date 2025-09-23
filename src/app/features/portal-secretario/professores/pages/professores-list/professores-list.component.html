@@ -1,0 +1,73 @@
+<div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">Gestão de Professores</h1>
+        <p-button 
+            (onClick)="openFormModal()"
+            label="Adicionar Novo Professor"
+            icon="pi pi-plus"
+            severity="primary">
+        </p-button>
+    </div>
+
+    <!-- Barra de Busca -->
+    <div class="mb-4">
+        <input 
+            pInputText
+            type="text" 
+            placeholder="Buscar professor por nome ou email..." 
+            class="w-full">
+    </div>
+
+    <!-- Tabela de Professores -->
+    <p-table [value]="professores" [tableStyle]="{'min-width': '50rem'}">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Nome Completo</th>
+                <th>Email</th>
+                <th>Matérias</th>
+                <th>Carga Horária</th>
+                <th>Status</th>
+                <th style="text-align: center">Ações</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-professor>
+            <tr>
+                <td>{{ professor.nomeCompleto }}</td>
+                <td>{{ professor.email }}</td>
+                <td>{{ professor.materias.join(', ') }}</td>
+                <td>{{ professor.cargaHoraria }}h</td>
+                <td>
+                    <p-tag 
+                        [value]="professor.status"
+                        [severity]="professor.status === 'Ativo' ? 'success' : 'danger'">
+                    </p-tag>
+                </td>
+                <td style="text-align: center">
+                    <p-button 
+                        (onClick)="openFormModal(professor)"
+                        icon="pi pi-pencil"
+                        severity="info"
+                        [text]="true"
+                        size="small"
+                        class="mr-2">
+                    </p-button>
+                    <p-button 
+                        (onClick)="onDelete(professor.id)"
+                        icon="pi pi-trash"
+                        severity="danger"
+                        [text]="true"
+                        size="small">
+                    </p-button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Modal do Formulário -->
+<app-professor-form
+  *ngIf="isFormModalOpen"
+  [professor]="professorSelecionado"
+  (save)="onSave($event)"
+  (close)="closeFormModal()">
+</app-professor-form>

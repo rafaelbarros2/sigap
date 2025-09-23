@@ -1,9 +1,27 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "primeicons/primeicons.css";
 
 @import "tailwindcss";
 
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cursor pointer para todos os botões */
+button, 
+.p-button, 
+p-button, 
+[role="button"] {
+    cursor: pointer !important;
+}
+
+/* Cursor pointer para elementos clicáveis do PrimeNG */
+.p-checkbox,
+.p-dropdown,
+.p-calendar,
+.p-inputnumber,
+.p-multiselect {
+    cursor: pointer !important;
 }

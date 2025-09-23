@@ -1,0 +1,95 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-hidden border-2 border-gray-300" (click)="$event.stopPropagation()">
+    <div class="p-6">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Adicionar Alunos à Turma</h2>
+        <p-button 
+          icon="pi pi-times"
+          severity="secondary"
+          [text]="true"
+          [rounded]="true"
+          size="large"
+          (onClick)="fecharModal()"
+          class="!p-2">
+        </p-button>
+      </div>
+      
+      <!-- Barra de Busca -->
+      <div class="mb-6">
+        <label for="search" class="block text-sm font-medium text-gray-700 mb-2">
+          Buscar por nome ou matrícula
+        </label>
+        <input 
+          pInputText
+          id="search"
+          type="text" 
+          [(ngModel)]="searchTerm"
+          (ngModelChange)="onSearchChange()"
+          placeholder="Digite o nome ou matrícula do aluno..." 
+          class="w-full">
+      </div>
+
+      <!-- Contador de Resultados -->
+      <div class="mb-4 flex justify-between items-center">
+        <p class="text-sm text-gray-600">
+          {{ alunosFiltrados.length }} aluno(s) disponível(is)
+        </p>
+        <p class="text-sm font-medium text-blue-600" *ngIf="alunosSelecionados.length > 0">
+          {{ alunosSelecionados.length }} selecionado(s)
+        </p>
+      </div>
+      
+      <!-- Lista de Alunos -->
+      <div class="border rounded-lg max-h-96 overflow-y-auto mb-6">
+        <div *ngIf="alunosFiltrados.length === 0" class="p-8 text-center text-gray-500">
+          <i class="pi pi-search text-3xl mb-2 block text-gray-300"></i>
+          <p *ngIf="!searchTerm">Nenhum aluno disponível para matrícula</p>
+          <p *ngIf="searchTerm">Nenhum aluno encontrado com o termo "{{ searchTerm }}"</p>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+          <div 
+            *ngFor="let aluno of alunosFiltrados" 
+            class="p-4 flex items-center space-x-4 hover:bg-gray-50 transition-colors">
+            
+            <p-checkbox 
+              [ngModel]="isAlunoSelecionado(aluno)"
+              (onChange)="onAlunoSelecionado(aluno, $event.checked)"
+              class="flex-shrink-0">
+            </p-checkbox>
+            
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-gray-900 truncate">{{ aluno.nomeCompleto }}</p>
+              <p class="text-sm text-gray-500">Matrícula: {{ aluno.matricula }}</p>
+            </div>
+            
+            <div class="flex-shrink-0">
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                Disponível
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Botões -->
+      <div class="flex justify-end space-x-4 pt-4 border-t">
+        <p-button 
+          label="Cancelar"
+          icon="pi pi-times"
+          severity="secondary"
+          (onClick)="fecharModal()">
+        </p-button>
+        
+        <p-button 
+          label="Adicionar Selecionados ({{ alunosSelecionados.length }})"
+          icon="pi pi-check"
+          [disabled]="alunosSelecionados.length === 0"
+          (onClick)="adicionarSelecionados()">
+        </p-button>
+      </div>
+    </div>
+  </div>
+</div>
+

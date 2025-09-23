@@ -1,0 +1,145 @@
+/* Estilos específicos para Minhas Turmas */
+
+/* Grid responsivo */
+.grid {
+  display: grid;
+}
+
+/* Espaçamento consistente */
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.75rem;
+}
+
+/* Cards com altura uniforme */
+p-card {
+  height: 100%;
+}
+
+/* Hover effects */
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Cores customizadas */
+.text-green-600 {
+  color: #059669;
+}
+
+.text-blue-600 {
+  color: #2563eb;
+}
+
+.text-yellow-600 {
+  color: #d97706;
+}
+
+.text-red-600 {
+  color: #dc2626;
+}
+
+/* Progress bar customização */
+::ng-deep .p-progressbar {
+  height: 6px;
+  border-radius: 3px;
+}
+
+::ng-deep .p-progressbar .p-progressbar-value {
+  border-radius: 3px;
+}
+
+/* Chips customizados */
+::ng-deep .p-chip {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+/* Tabela responsiva */
+::ng-deep .p-datatable {
+  overflow-x: auto;
+}
+
+::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 0.75rem 0.5rem;
+  vertical-align: middle;
+}
+
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  padding: 0.75rem 0.5rem;
+  font-weight: 600;
+}
+
+/* Botões de ação */
+.flex.gap-1 {
+  gap: 0.25rem;
+}
+
+.flex.gap-2 {
+  gap: 0.5rem;
+}
+
+/* Input com ícone */
+::ng-deep .p-input-icon-left > i {
+  left: 0.75rem;
+  color: #6b7280;
+}
+
+::ng-deep .p-input-icon-left > input {
+  padding-left: 2.5rem;
+}
+
+/* Dropdown width */
+::ng-deep .p-dropdown {
+  width: 100%;
+}
+
+/* Responsividade para mobile */
+@media (max-width: 768px) {
+  .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-cols-1.md\:grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+
+  ::ng-deep .p-datatable .p-datatable-tbody > tr > td,
+  ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .text-xl {
+    font-size: 1.125rem;
+  }
+
+  .text-3xl {
+    font-size: 1.875rem;
+  }
+}
+
+/* Animações */
+.transition-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.duration-300 {
+  transition-duration: 300ms;
+}
+
+/* Estado loading (para futuras implementações) */
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Melhorar alinhamento dos chips */
+::ng-deep .p-chip.p-component {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Customizar tooltip */
+::ng-deep .p-tooltip .p-tooltip-text {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}

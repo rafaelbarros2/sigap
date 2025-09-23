@@ -1,0 +1,52 @@
+ <div class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center animate-fade-in">
+      <div class="bg-white rounded-lg shadow-xl p-8 w-full max-w-2xl transform transition-all animate-scale-in">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800">
+            Documentos de <span class="text-blue-600">{{ alunoNome }}</span>
+          </h2>
+          <button (click)="close.emit()" class="text-gray-400 hover:text-gray-600">&times;</button>
+        </div>
+
+        <!-- Área de Upload -->
+        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
+          <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <p class="mt-2 text-sm text-gray-600">
+            Arraste e solte os arquivos aqui ou
+            <label for="file-upload" class="font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
+              clique para selecionar
+            </label>
+          </p>
+          <input id="file-upload" name="file-upload" type="file" class="sr-only" multiple>
+        </div>
+
+        <!-- Lista de Documentos Anexados -->
+        <div>
+          <h3 class="text-lg font-medium text-gray-700 mb-4">Documentos Anexados</h3>
+          <ul class="space-y-3">
+            <!-- Item de exemplo 1 -->
+            <li class="bg-gray-100 rounded-lg p-3 flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-800">Certidão de Nascimento.pdf</span>
+              <div class="flex items-center space-x-4">
+                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">Visualizar</a>
+                <button class="text-red-500 hover:text-red-700">&times;</button>
+              </div>
+            </li>
+            <!-- Item de exemplo 2 -->
+            <li class="bg-gray-100 rounded-lg p-3 flex items-center justify-between">
+              <span class="text-sm font-medium text-gray-800">Comprovante de Residência.jpg</span>
+              <div class="flex items-center space-x-4">
+                <a href="#" class="text-blue-600 hover:text-blue-800 text-sm">Visualizar</a>
+                <button class="text-red-500 hover:text-red-700">&times;</button>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Botão de Fechar -->
+        <div class="flex justify-end mt-8">
+            <button (click)="close.emit()" class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium">Fechar</button>
+        </div>
+      </div>
+    </div>

@@ -1,8 +1,11 @@
-<div class="flex h-screen bg-gray-50">
-    <app-sidebar></app-sidebar>
-    <main class="flex-1 overflow-auto">
-        <div class="p-6">
-            <router-outlet></router-outlet>
-        </div>
-    </main>
+<div class="h-screen bg-gray-50 flex flex-col">
+    <app-topbar></app-topbar>
+    <div class="flex flex-1 overflow-hidden">
+        <app-sidebar></app-sidebar>
+        <main class="flex-1 overflow-auto">
+            <div class="p-6">
+                <router-outlet></router-outlet>
+            </div>
+        </main>
+    </div>
 </div>

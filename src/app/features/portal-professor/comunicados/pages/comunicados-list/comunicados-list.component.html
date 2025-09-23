@@ -1,0 +1,374 @@
+<div class="p-4 sm:p-6">
+  <!-- Cabeçalho -->
+  <div class="mb-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Comunicados (prof)</h1>
+        <p class="text-gray-600 mt-1">Gerencie comunicações com alunos e responsáveis</p>
+      </div>
+      <p-button
+        label="Novo Comunicado"
+        icon="pi pi-plus"
+        (onClick)="novoComunicado()">
+      </p-button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <p-card styleClass="mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
+      <!-- Busca por texto -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Buscar</label>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="filtros.texto"
+            (input)="onFiltroChange()"
+            placeholder="Título ou conteúdo"
+            class="w-full">
+        </span>
+      </div>
+
+      <!-- Filtro por tipo -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Tipo</label>
+        <p-dropdown
+          [(ngModel)]="filtros.tipo"
+          [options]="tiposOptions"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="onFiltroChange()"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <!-- Filtro por status -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Status</label>
+        <p-dropdown
+          [(ngModel)]="filtros.status"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="onFiltroChange()"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <!-- Filtro por prioridade -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Prioridade</label>
+        <p-dropdown
+          [(ngModel)]="filtros.prioridade"
+          [options]="prioridadeOptions"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="onFiltroChange()"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <!-- Data início -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Data Início</label>
+        <p-calendar
+          [(ngModel)]="filtros.dataInicio"
+          (onSelect)="onFiltroChange()"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          class="w-full">
+        </p-calendar>
+      </div>
+
+      <!-- Controles -->
+      <div class="flex gap-2">
+        <p-button
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          size="small"
+          (onClick)="limparFiltros()"
+          pTooltip="Limpar filtros">
+        </p-button>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Contador -->
+  <div class="mb-4 text-sm text-gray-600">
+    Mostrando {{ comunicadosFiltrados.length }} de {{ comunicados.length }} comunicados
+  </div>
+
+  <!-- Lista de Comunicados -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <p-card *ngFor="let comunicado of comunicadosFiltrados" styleClass="shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="flex flex-col h-full">
+        <!-- Header do Card -->
+        <div class="flex justify-between items-start mb-3">
+          <div class="flex gap-2">
+            <p-tag [severity]="getCorTipo(comunicado.tipo)" [value]="comunicado.tipo"></p-tag>
+            <p-tag [severity]="getCorPrioridade(comunicado.prioridade)" [value]="comunicado.prioridade"></p-tag>
+          </div>
+          <p-tag [severity]="getCorStatus(comunicado.status)" [value]="comunicado.status"></p-tag>
+        </div>
+
+        <!-- Título e Conteúdo -->
+        <div class="mb-4 flex-grow">
+          <h3 class="text-lg font-bold text-gray-800 mb-2">{{ comunicado.titulo }}</h3>
+          <p class="text-gray-600 text-sm leading-relaxed">
+            {{ truncarTexto(comunicado.conteudo, 120) }}
+          </p>
+        </div>
+
+        <!-- Informações -->
+        <div class="space-y-2 mb-4 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-600">Criado em:</span>
+            <span class="font-medium">{{ formatarData(comunicado.dataCreacao) }}</span>
+          </div>
+          <div class="flex justify-between" *ngIf="comunicado.dataEnvio">
+            <span class="text-gray-600">Enviado em:</span>
+            <span class="font-medium">{{ formatarData(comunicado.dataEnvio) }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Destinatários:</span>
+            <span class="font-medium">
+              {{ comunicado.destinatarios.includes('todos') ? 'Todas as turmas' : comunicado.destinatarios.length + ' turma(s)' }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Estatísticas (apenas para enviados) -->
+        <div *ngIf="comunicado.status === 'Enviado' && comunicado.visualizacoes" class="mb-4 p-3 bg-gray-50 rounded-lg">
+          <div class="grid grid-cols-2 gap-4 text-center">
+            <div>
+              <div class="text-lg font-bold text-blue-600">{{ getEstatisticas(comunicado).visualizados }}</div>
+              <div class="text-xs text-gray-600">Visualizações</div>
+            </div>
+            <div>
+              <div class="text-lg font-bold text-green-600">{{ getEstatisticas(comunicado).respondidos }}</div>
+              <div class="text-xs text-gray-600">Respostas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex gap-2 pt-3 border-t border-gray-200">
+          <p-button
+            icon="pi pi-eye"
+            severity="secondary"
+            size="small"
+            (onClick)="visualizarComunicado(comunicado)"
+            pTooltip="Visualizar">
+          </p-button>
+
+          <p-button
+            icon="pi pi-pencil"
+            severity="info"
+            size="small"
+            (onClick)="editarComunicado(comunicado)"
+            pTooltip="Editar"
+            [disabled]="comunicado.status === 'Enviado'">
+          </p-button>
+
+          <p-button
+            icon="pi pi-send"
+            severity="success"
+            size="small"
+            (onClick)="enviarComunicado(comunicado)"
+            pTooltip="Enviar"
+            *ngIf="comunicado.status === 'Rascunho'"
+            styleClass="flex-1">
+          </p-button>
+
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            size="small"
+            (onClick)="excluirComunicado(comunicado)"
+            pTooltip="Excluir"
+            [disabled]="comunicado.status === 'Enviado'">
+          </p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Estado vazio -->
+  <div *ngIf="comunicadosFiltrados.length === 0" class="text-center py-12">
+    <i class="pi pi-megaphone text-4xl text-gray-400 mb-4"></i>
+    <h3 class="text-lg font-semibold text-gray-700 mb-2">Nenhum comunicado encontrado</h3>
+    <p class="text-gray-600 mb-4">Tente ajustar os filtros ou crie um novo comunicado.</p>
+    <p-button label="Novo Comunicado" icon="pi pi-plus" (onClick)="novoComunicado()"></p-button>
+  </div>
+</div>
+
+<!-- Modal de Criação/Edição -->
+<p-dialog
+  [(visible)]="showModalComunicado"
+  [header]="isEditMode ? 'Editar Comunicado' : 'Novo Comunicado'"
+  [modal]="true"
+  [style]="{width: '800px', maxWidth: '90vw'}"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false">
+
+  <div class="space-y-4">
+    <!-- Título -->
+    <div class="flex flex-col">
+      <label class="text-sm font-medium text-gray-700 mb-2">Título *</label>
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="comunicadoAtual.titulo"
+        placeholder="Digite o título do comunicado"
+        class="w-full">
+    </div>
+
+    <!-- Tipo e Prioridade -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Tipo</label>
+        <p-dropdown
+          [(ngModel)]="comunicadoAtual.tipo"
+          [options]="tiposComunicado"
+          optionLabel="label"
+          optionValue="value"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Prioridade</label>
+        <p-dropdown
+          [(ngModel)]="comunicadoAtual.prioridade"
+          [options]="prioridadesComunicado"
+          optionLabel="label"
+          optionValue="value"
+          class="w-full">
+        </p-dropdown>
+      </div>
+    </div>
+
+    <!-- Destinatários -->
+    <div class="flex flex-col" *ngIf="comunicadoAtual.tipo === 'Turma'">
+      <label class="text-sm font-medium text-gray-700 mb-2">Turmas Destinatárias</label>
+      <p-multiSelect
+        [(ngModel)]="comunicadoAtual.destinatarios"
+        [options]="turmasOptions"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Selecione as turmas"
+        class="w-full">
+      </p-multiSelect>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="flex flex-col">
+      <label class="text-sm font-medium text-gray-700 mb-2">Conteúdo *</label>
+      <textarea
+        pInputTextarea
+        [(ngModel)]="comunicadoAtual.conteudo"
+        placeholder="Digite o conteúdo do comunicado"
+        rows="6"
+        class="w-full resize-none">
+      </textarea>
+    </div>
+
+    <!-- Data de Expiração -->
+    <div class="flex flex-col">
+      <label class="text-sm font-medium text-gray-700 mb-2">Data de Expiração (opcional)</label>
+      <p-calendar
+        [(ngModel)]="comunicadoAtual.dataExpiracao"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        class="w-full">
+      </p-calendar>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2">
+      <p-button
+        label="Cancelar"
+        severity="secondary"
+        (onClick)="fecharModal()">
+      </p-button>
+      <p-button
+        label="Salvar"
+        (onClick)="salvarComunicado()"
+        [disabled]="!comunicadoAtual.titulo || !comunicadoAtual.conteudo">
+      </p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Modal de Visualização -->
+<p-dialog
+  [(visible)]="showModalVisualizacao"
+  [header]="comunicadoSelecionado?.titulo"
+  [modal]="true"
+  [style]="{width: '700px', maxWidth: '90vw'}"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false">
+
+  <div *ngIf="comunicadoSelecionado" class="space-y-4">
+    <!-- Tags -->
+    <div class="flex gap-2 mb-4">
+      <p-tag [severity]="getCorTipo(comunicadoSelecionado.tipo)" [value]="comunicadoSelecionado.tipo"></p-tag>
+      <p-tag [severity]="getCorPrioridade(comunicadoSelecionado.prioridade)" [value]="comunicadoSelecionado.prioridade"></p-tag>
+      <p-tag [severity]="getCorStatus(comunicadoSelecionado.status)" [value]="comunicadoSelecionado.status"></p-tag>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <p class="text-gray-800 leading-relaxed whitespace-pre-wrap">{{ comunicadoSelecionado.conteudo }}</p>
+    </div>
+
+    <!-- Informações -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+      <div>
+        <strong>Autor:</strong> {{ comunicadoSelecionado.autor }}
+      </div>
+      <div>
+        <strong>Data de Criação:</strong> {{ formatarData(comunicadoSelecionado.dataCreacao) }}
+      </div>
+      <div *ngIf="comunicadoSelecionado.dataEnvio">
+        <strong>Data de Envio:</strong> {{ formatarData(comunicadoSelecionado.dataEnvio) }}
+      </div>
+      <div *ngIf="comunicadoSelecionado.dataExpiracao">
+        <strong>Data de Expiração:</strong> {{ formatarData(comunicadoSelecionado.dataExpiracao) }}
+      </div>
+    </div>
+
+    <!-- Estatísticas detalhadas -->
+    <div *ngIf="comunicadoSelecionado.status === 'Enviado' && comunicadoSelecionado.visualizacoes" class="mt-6">
+      <h4 class="font-semibold mb-3">Estatísticas de Visualização</h4>
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div class="bg-blue-50 p-3 rounded">
+          <div class="text-2xl font-bold text-blue-600">{{ getEstatisticas(comunicadoSelecionado).visualizados }}</div>
+          <div class="text-sm text-gray-600">Visualizações</div>
+        </div>
+        <div class="bg-green-50 p-3 rounded">
+          <div class="text-2xl font-bold text-green-600">{{ getEstatisticas(comunicadoSelecionado).respondidos }}</div>
+          <div class="text-sm text-gray-600">Respostas</div>
+        </div>
+        <div class="bg-purple-50 p-3 rounded">
+          <div class="text-2xl font-bold text-purple-600">{{ getEstatisticas(comunicadoSelecionado).percentualVisualizacao }}%</div>
+          <div class="text-sm text-gray-600">Taxa de Visualização</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button
+      label="Fechar"
+      severity="secondary"
+      (onClick)="fecharModal()">
+    </p-button>
+  </ng-template>
+</p-dialog>

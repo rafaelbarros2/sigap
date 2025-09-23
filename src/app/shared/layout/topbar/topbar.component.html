@@ -1,0 +1,29 @@
+<header class="bg-white shadow-sm z-10">
+<div class="flex items-center justify-end h-16 px-8">
+        <!-- Ícone de Notificações -->
+        <p-button 
+            icon="pi pi-bell"
+            severity="secondary"
+            [text]="true"
+            [rounded]="true">
+        </p-button>
+        
+        <!-- Menu do Usuário -->
+        <div class="ml-4 flex items-center">
+            <span class="text-gray-700 mr-3 font-medium">Olá, Ana da Silva</span>
+            <div class="relative">
+                <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                    <img class="h-8 w-8 rounded-full object-cover" src="https://placehold.co/100x100/6366f1/white?text=A" alt="Avatar do usuário">
+                </button>
+                <!-- Dropdown do usuário (pode ser implementado depois) -->
+            </div>
+            <p-button 
+                icon="pi pi-sign-out"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                class="ml-4">
+            </p-button>
+        </div>
+    </div>
+</header>

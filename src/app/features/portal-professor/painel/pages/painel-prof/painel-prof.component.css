@@ -1,0 +1,37 @@
+/* Estilos específicos para o painel do professor */
+.grid {
+  display: grid;
+}
+
+p-card {
+  height: 100%;
+}
+
+p-calendar {
+  width: 100%;
+}
+
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  margin-top: 0.75rem;
+}
+
+/* Melhorar a aparência do calendar */
+::ng-deep .p-calendar {
+  width: 100%;
+}
+
+::ng-deep .p-calendar .p-inputtext {
+  width: 100%;
+}
+
+/* Efeitos de hover nos cards de aula */
+.hover\:bg-gray-100:hover {
+  background-color: #f3f4f6;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

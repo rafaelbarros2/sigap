@@ -1,0 +1,248 @@
+<div class="p-4 sm:p-6">
+  <!-- Cabeçalho -->
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">Minhas Turmas (prof)</h1>
+    <p class="text-gray-600 mt-1">Gerencie todas as suas turmas e acompanhe o progresso dos alunos</p>
+  </div>
+
+  <!-- Filtros e Controles -->
+  <p-card styleClass="mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+      <!-- Filtro por Texto -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Buscar Turma</label>
+        <span class="p-input-icon-left">
+          <i class="pi pi-search"></i>
+          <input
+            type="text"
+            pInputText
+            [(ngModel)]="filtroTexto"
+            (input)="onFiltroChange()"
+            placeholder="Nome da turma ou disciplina"
+            class="w-full">
+        </span>
+      </div>
+
+      <!-- Filtro por Período -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Período</label>
+        <p-dropdown
+          [(ngModel)]="filtroPeriodo"
+          [options]="periodosOptions"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="onFiltroChange()"
+          placeholder="Selecione o período"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <!-- Filtro por Status -->
+      <div class="flex flex-col">
+        <label class="text-sm font-medium text-gray-700 mb-2">Status</label>
+        <p-dropdown
+          [(ngModel)]="filtroStatus"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+          (onChange)="onFiltroChange()"
+          placeholder="Selecione o status"
+          class="w-full">
+        </p-dropdown>
+      </div>
+
+      <!-- Controles -->
+      <div class="flex gap-2">
+        <p-button
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          size="small"
+          (onClick)="limparFiltros()"
+          pTooltip="Limpar filtros">
+        </p-button>
+        <p-button
+          [icon]="modoVisualizacao === 'cards' ? 'pi pi-table' : 'pi pi-th-large'"
+          severity="info"
+          size="small"
+          (onClick)="alternarVisualizacao()"
+          [pTooltip]="modoVisualizacao === 'cards' ? 'Ver em tabela' : 'Ver em cards'">
+        </p-button>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- Contador de Resultados -->
+  <div class="mb-4 text-sm text-gray-600">
+    Mostrando {{ turmasFiltradas.length }} de {{ turmasDetalhadas.length }} turmas
+  </div>
+
+  <!-- Visualização em Cards -->
+  <div *ngIf="modoVisualizacao === 'cards'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <p-card *ngFor="let turma of turmasFiltradas" styleClass="shadow-md hover:shadow-lg transition-shadow duration-300">
+      <div class="flex flex-col h-full">
+        <!-- Header do Card -->
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h3 class="text-xl font-bold text-gray-800 mb-1">{{ turma.nomeTurma }}</h3>
+            <p class="text-gray-600">{{ turma.disciplina }}</p>
+          </div>
+          <p-tag [severity]="getCorStatus(turma.statusTurma)" [value]="turma.statusTurma"></p-tag>
+        </div>
+
+        <!-- Informações Principais -->
+        <div class="space-y-3 mb-4 flex-grow">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Período:</span>
+            <p-chip [label]="turma.periodo" [style]="{'background-color': turma.periodo === 'Manhã' ? '#3B82F6' : '#F59E0B', 'color': 'white'}"></p-chip>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Total Alunos:</span>
+            <span class="font-semibold">{{ turma.totalAlunos }}</span>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Próxima Aula:</span>
+            <span class="text-sm font-medium">{{ turma.proximaAula }}</span>
+          </div>
+
+          <!-- Progress das Aulas -->
+          <div>
+            <div class="flex justify-between text-sm text-gray-600 mb-1">
+              <span>Progresso das Aulas</span>
+              <span>{{ turma.aulasRealizadas }}/{{ turma.totalAulas }}</span>
+            </div>
+            <p-progressBar [value]="getProgressoAulas(turma)" [showValue]="false"></p-progressBar>
+          </div>
+
+          <!-- Métricas -->
+          <div class="grid grid-cols-2 gap-4 pt-2">
+            <div class="text-center">
+              <div class="text-lg font-bold" [ngClass]="getCorFrequencia(turma.frequenciaMedia)">
+                {{ turma.frequenciaMedia }}%
+              </div>
+              <div class="text-xs text-gray-600">Frequência</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-bold" [ngClass]="getCorMedia(turma.mediaGeral)">
+                {{ turma.mediaGeral }}
+              </div>
+              <div class="text-xs text-gray-600">Média Geral</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex gap-2 pt-4 border-t border-gray-200">
+          <p-button
+            label="Diário"
+            icon="pi pi-book"
+            size="small"
+            styleClass="flex-1"
+            (onClick)="abrirDiarioClasse(turma)">
+          </p-button>
+          <p-button
+            icon="pi pi-eye"
+            severity="secondary"
+            size="small"
+            (onClick)="verDetalhes(turma)"
+            pTooltip="Ver detalhes">
+          </p-button>
+          <p-button
+            icon="pi pi-file-pdf"
+            severity="help"
+            size="small"
+            (onClick)="gerarRelatorio(turma)"
+            pTooltip="Gerar relatório">
+          </p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Visualização em Tabela -->
+  <p-card *ngIf="modoVisualizacao === 'table'" styleClass="shadow-md">
+    <p-table [value]="turmasFiltradas" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Turma</th>
+          <th>Período</th>
+          <th>Alunos</th>
+          <th>Status</th>
+          <th>Progresso</th>
+          <th>Frequência</th>
+          <th>Média</th>
+          <th>Próxima Aula</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-turma>
+        <tr>
+          <td>
+            <div>
+              <div class="font-semibold">{{ turma.nomeTurma }}</div>
+              <div class="text-sm text-gray-600">{{ turma.disciplina }}</div>
+            </div>
+          </td>
+          <td>
+            <p-chip [label]="turma.periodo" [style]="{'background-color': turma.periodo === 'Manhã' ? '#3B82F6' : '#F59E0B', 'color': 'white'}"></p-chip>
+          </td>
+          <td>{{ turma.totalAlunos }}</td>
+          <td>
+            <p-tag [severity]="getCorStatus(turma.statusTurma)" [value]="turma.statusTurma"></p-tag>
+          </td>
+          <td>
+            <div class="w-24">
+              <p-progressBar [value]="getProgressoAulas(turma)" [showValue]="false"></p-progressBar>
+              <div class="text-xs text-gray-600 mt-1">{{ turma.aulasRealizadas }}/{{ turma.totalAulas }}</div>
+            </div>
+          </td>
+          <td>
+            <span class="font-semibold" [ngClass]="getCorFrequencia(turma.frequenciaMedia)">
+              {{ turma.frequenciaMedia }}%
+            </span>
+          </td>
+          <td>
+            <span class="font-semibold" [ngClass]="getCorMedia(turma.mediaGeral)">
+              {{ turma.mediaGeral }}
+            </span>
+          </td>
+          <td class="text-sm">{{ turma.proximaAula }}</td>
+          <td class="text-center">
+            <div class="flex gap-1 justify-center">
+              <p-button
+                icon="pi pi-book"
+                severity="primary"
+                size="small"
+                (onClick)="abrirDiarioClasse(turma)"
+                pTooltip="Diário de classe">
+              </p-button>
+              <p-button
+                icon="pi pi-eye"
+                severity="secondary"
+                size="small"
+                (onClick)="verDetalhes(turma)"
+                pTooltip="Ver detalhes">
+              </p-button>
+              <p-button
+                icon="pi pi-file-pdf"
+                severity="help"
+                size="small"
+                (onClick)="gerarRelatorio(turma)"
+                pTooltip="Gerar relatório">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+
+  <!-- Estado Vazio -->
+  <div *ngIf="turmasFiltradas.length === 0" class="text-center py-12">
+    <i class="pi pi-search text-4xl text-gray-400 mb-4"></i>
+    <h3 class="text-lg font-semibold text-gray-700 mb-2">Nenhuma turma encontrada</h3>
+    <p class="text-gray-600 mb-4">Tente ajustar os filtros para encontrar suas turmas.</p>
+    <p-button label="Limpar Filtros" icon="pi pi-filter-slash" severity="secondary" (onClick)="limparFiltros()"></p-button>
+  </div>
+</div>

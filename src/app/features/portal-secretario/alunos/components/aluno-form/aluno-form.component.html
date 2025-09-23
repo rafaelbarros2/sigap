@@ -1,0 +1,237 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border-2 border-gray-300" (click)="$event.stopPropagation()">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">{{ aluno?.id ? 'Editar Aluno' : 'Adicionar Novo Aluno' }}</h2>
+        <p-button 
+          icon="pi pi-times"
+          severity="secondary"
+          [text]="true"
+          [rounded]="true"
+          size="large"
+          (onClick)="close.emit()"
+          class="!p-2">
+        </p-button>
+      </div>
+      
+      <form [formGroup]="alunoForm" (ngSubmit)="onSubmit()">
+        
+        <!-- Dados Básicos -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label for="nomeCompleto" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo *</label>
+            <input pInputText
+                   id="nomeCompleto" 
+                   formControlName="nomeCompleto"
+                   placeholder="Digite o nome completo"
+                   class="w-full"
+                   [class.ng-invalid]="isFieldInvalid('nomeCompleto')">
+          </div>
+          
+          <div>
+            <label for="matricula" class="block text-sm font-medium text-gray-700 mb-2">Matrícula *</label>
+            <input pInputText
+                   id="matricula" 
+                   formControlName="matricula"
+                   placeholder="Digite a matrícula"
+                   class="w-full"
+                   [class.ng-invalid]="isFieldInvalid('matricula')">
+          </div>
+          
+          <div>
+            <label for="turma" class="block text-sm font-medium text-gray-700 mb-2">Turma *</label>
+            <p-dropdown [options]="turmasOptions"
+                        formControlName="turma"
+                        placeholder="Selecione a turma"
+                        class="w-full"
+                        [class.ng-invalid]="isFieldInvalid('turma')">
+            </p-dropdown>
+          </div>
+          
+          <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status *</label>
+            <p-dropdown [options]="statusOptions"
+                        formControlName="status"
+                        placeholder="Selecione o status"
+                        class="w-full"
+                        [class.ng-invalid]="isFieldInvalid('status')">
+            </p-dropdown>
+          </div>
+          
+          <div>
+            <label for="dataNascimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Nascimento</label>
+            <p-calendar formControlName="dataNascimento"
+                        placeholder="Selecione a data"
+                        [showIcon]="true"
+                        dateFormat="dd/mm/yy"
+                        class="w-full">
+            </p-calendar>
+          </div>
+          
+          <div>
+            <label for="cpf" class="block text-sm font-medium text-gray-700 mb-2">CPF</label>
+            <p-inputMask formControlName="cpf"
+                         mask="999.999.999-99"
+                         placeholder="000.000.000-00"
+                         class="w-full">
+            </p-inputMask>
+          </div>
+        </div>
+
+        <!-- Contato -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+            <input pInputText
+                   id="email" 
+                   type="email"
+                   formControlName="email"
+                   placeholder="email@exemplo.com"
+                   class="w-full"
+                   [class.ng-invalid]="isFieldInvalid('email')">
+          </div>
+          
+          <div>
+            <label for="telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+            <p-inputMask formControlName="telefone"
+                         mask="(99) 99999-9999"
+                         placeholder="(00) 00000-0000"
+                         class="w-full">
+            </p-inputMask>
+          </div>
+        </div>
+
+        <!-- Endereço -->
+        <div formGroupName="endereco" class="mb-6">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">Endereço</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="cep" class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
+              <p-inputMask formControlName="cep"
+                           mask="99999-999"
+                           placeholder="00000-000"
+                           class="w-full">
+              </p-inputMask>
+            </div>
+            
+            <div class="md:col-span-2">
+              <label for="logradouro" class="block text-sm font-medium text-gray-700 mb-2">Logradouro</label>
+              <input pInputText
+                     id="logradouro" 
+                     formControlName="logradouro"
+                     placeholder="Rua, Avenida, etc."
+                     class="w-full">
+            </div>
+            
+            <div>
+              <label for="numero" class="block text-sm font-medium text-gray-700 mb-2">Número</label>
+              <input pInputText
+                     id="numero" 
+                     formControlName="numero"
+                     placeholder="123"
+                     class="w-full">
+            </div>
+            
+            <div>
+              <label for="complemento" class="block text-sm font-medium text-gray-700 mb-2">Complemento</label>
+              <input pInputText
+                     id="complemento" 
+                     formControlName="complemento"
+                     placeholder="Apto, Bloco, etc."
+                     class="w-full">
+            </div>
+            
+            <div>
+              <label for="bairro" class="block text-sm font-medium text-gray-700 mb-2">Bairro</label>
+              <input pInputText
+                     id="bairro" 
+                     formControlName="bairro"
+                     placeholder="Nome do bairro"
+                     class="w-full">
+            </div>
+            
+            <div>
+              <label for="cidade" class="block text-sm font-medium text-gray-700 mb-2">Cidade</label>
+              <input pInputText
+                     id="cidade" 
+                     formControlName="cidade"
+                     placeholder="Nome da cidade"
+                     class="w-full">
+            </div>
+            
+            <div>
+              <label for="uf" class="block text-sm font-medium text-gray-700 mb-2">UF</label>
+              <input pInputText
+                     id="uf" 
+                     formControlName="uf"
+                     placeholder="SP"
+                     maxlength="2"
+                     class="w-full">
+            </div>
+          </div>
+        </div>
+
+        <!-- Responsável -->
+        <div formGroupName="responsavel" class="mb-6">
+          <h3 class="text-lg font-medium text-gray-800 mb-4">Responsável</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="nomeResponsavel" class="block text-sm font-medium text-gray-700 mb-2">Nome do Responsável</label>
+              <input pInputText
+                     id="nomeResponsavel" 
+                     formControlName="nome"
+                     placeholder="Nome completo do responsável"
+                     class="w-full">
+            </div>
+            
+            <div>
+              <label for="parentesco" class="block text-sm font-medium text-gray-700 mb-2">Parentesco</label>
+              <p-dropdown [options]="parentescoOptions"
+                          formControlName="parentesco"
+                          placeholder="Selecione o parentesco"
+                          class="w-full">
+              </p-dropdown>
+            </div>
+            
+            <div>
+              <label for="telefoneResponsavel" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+              <p-inputMask formControlName="telefone"
+                           mask="(99) 99999-9999"
+                           placeholder="(00) 00000-0000"
+                           class="w-full">
+              </p-inputMask>
+            </div>
+            
+            <div>
+              <label for="emailResponsavel" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input pInputText
+                     id="emailResponsavel" 
+                     type="email"
+                     formControlName="email"
+                     placeholder="email@exemplo.com"
+                     class="w-full"
+                     [class.ng-invalid]="isFieldInvalid('responsavel.email')">
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões -->
+        <div class="flex justify-end space-x-4 pt-4 border-t">
+          <p-button 
+            label="Cancelar"
+            icon="pi pi-times"
+            severity="secondary"
+            (onClick)="close.emit()">
+          </p-button>
+          
+          <p-button 
+            label="Salvar"
+            icon="pi pi-check"
+            type="submit"
+            [disabled]="alunoForm.invalid">
+          </p-button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
