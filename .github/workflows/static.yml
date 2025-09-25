@@ -32,8 +32,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build project
-        run: npm run build
+      - name: SIGAP
+        run: npm run build -- --configuration production --base-href /sigap/ --output-hashing=all
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
