@@ -34,11 +34,8 @@ jobs:
       - name: Build Angular project (SIGAP)
         run: npm run build -- --configuration production --base-href /sigap/ --output-hashing=all
 
-      - name: Add Angular fallback
+      - name: Create Angular fallback (404.html)
         run: cp dist/sigap/browser/index.html dist/sigap/browser/404.html
-
-      - name: List build output
-        run: ls -lh dist/sigap/browser
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -51,6 +48,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Show URL
-        run: echo "✅ O site foi publicado em: ${{ steps.deployment.outputs.page_url }}"
